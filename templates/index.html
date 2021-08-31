@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block head %}
+{% endblock %}
+
+{% block content %}
+<div class="text-right">
+    <a class="btn btn-primary btn-sm" id="createtest" href="{{ url_for('createtestcycle') }}" role="button">Create Test Cycle</a>
+    </div>
+
+<br/>
+<div class="row row-cols-1 row-cols-md-4">
+   {% for row in rows %}
+       <div class="col mb-4">
+     <div class="card" style="width: 16rem;">
+    <img src="{{ url_for('static', filename='') }}{{ row['imageurl'] }}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">{{ row["testcyclename"] }}</h5>
+      <p class="card-text">{{ row["description"] }}</p>
+        <a href="{{ url_for('testcycle', testcycleid=row['testcycleid']) }}" class="btn btn-primary">Read More</a>
+    </div>
+    <div class="card-footer">
+      <small class="text-muted">Last updated on: {{ convert_time(row["lastupdate"]) }}</small>
+    </div>
+     </div>
+  </div>
+
+    {% endfor %}
+   </div>
+
+    {% endblock %}

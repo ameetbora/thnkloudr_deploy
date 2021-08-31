@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Edit Test Item</h1>
+<hr>
+{% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    <form action="" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.testitemname.label }}<br>
+            {{ form.testitemname(size=40) }}<br>
+            {% for error in form.testitemname.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.testitemdesc.label }}<br>
+            {{ form.testitemdesc(size=140) }}<br>
+            {% for error in form.testitemdesc.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.testvideo.label }}<br>
+            {{ form.testvideo() }}<br>
+            {% for error in form.testvideo.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>{{ form.submit() }}</p>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock %}

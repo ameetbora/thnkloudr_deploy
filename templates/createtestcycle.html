@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Create New Test Cycle</h1>
+<hr>
+{% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.testcyclename.label }}<br>
+            {{ form.testcyclename(size=40) }}<br>
+            {% for error in form.testcyclename.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.testcycledesc.label }}<br>
+            {{ form.testcycledesc(size=140) }}<br>
+            {% for error in form.testcycledesc.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.projectname.label }}<br>
+            {{ form.projectname(size=40) }}<br>
+            {% for error in form.projectname.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.projectdesc.label }}<br>
+            {{ form.projectdesc(size=140) }}<br>
+            {% for error in form.projectdesc.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.trellolink.label }}<br>
+            {{ form.trellolink() }}<br>
+            {% for error in form.trellolink.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.testcycleimage.label }}<br>
+            {{ form.testcycleimage() }}<br>
+            {% for error in form.testcycleimage.errors %}
+            <span style="color: red;">[{{ error }}]</span>
+            {% endfor %}
+        </p>
+        <br>
+
+        <p>{{ form.createtestcycle }}</p>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+
+    </form>
+{% endblock %}

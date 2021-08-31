@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+{% block head %}
+
+<script>
+$(document).ready(function(){
+    console.log($("#generate").length)
+    var result = $('input[type="checkbox"]:checked');
+    console.log(result.length);
+
+
+    if($("#generate").length){
+        var test_id = $("#generate").data("test-id");
+        $('#insert_message_buttons').empty();
+        $('#insert_topic_buttons').empty();
+        $("#body-tab-content").hide();
+        $("#loading").html('<img src="/static/images/Spin.gif" align="absmiddle"> Loading Results...');
+        $("#generate").attr('disabled', true);
+        $("#trelloexport").attr('disabled', true);
+        console.log(test_id)
+        $.ajax({
+                type: "POST",
+                url: "/generatedata",
+                dataType: 'json',
+                data: {"data":test_id, "generate_data":false},
+                cache: false,
+                success: function(data){
+                    $("#body-tab-content").show();
+                    $("#loading").hide();
+                    $('#insert_message_buttons').show();
+                    $('#insert_topic_buttons').show();
+                    $("#generate").attr('disabled', false);
+                    $("#trelloexport").attr('disabled', false);
+                    console.log(data)
+                    console.log(data.messages);
+                    console.log(data.topics)
+                    $.each( data.messages, function( index, value ){
+                            console.log(value._text);
+                            $('#insert_message_buttons').append('<label class="btn btn-outline-success check_button" id="'+value._id+
+                                    '"><input type="checkbox" class="checkbox_trello" autocomplete="off" data-checked=false id="'+value._text+'"> '+value._text+'</label>');
+                     });
+                    $.each( data.topics, function( index, value ){
+                            console.log(value._text);
+                            $('#insert_topic_buttons').append('<label class="btn btn-outline-success check_button" id="'+value._id+
+                                    '"><input type="checkbox" class="checkbox_trello" autocomplete="off" data-checked=false id="'+value._text+'"> '+value._text+'</label>');
+                    });
+                    $.each( data.actions, function( index, value ){
+                    console.log(value._text);
+                    $('#insert_action_buttons').append('<label class="btn btn-outline-success check_button" id="'+value._id+
+                                    '"><input type="checkbox" class="checkbox_trello" autocomplete="off" data-checked=false id="'+value._text+'"> '+value._text+'</label>');
+                    });
+                    $.each( data.follow_ups, function( index, value ){
+                    console.log(value._text);
+                    $('#insert_followup_buttons').append('<label class="btn btn-outline-success check_button" id="'+value._id+
+                                    '"><input type="checkbox" class="checkbox_trello" autocomplete="off" data-checked=false id="'+value._text+'"> '+value._text+'</label>');
+                    });
+                    $.each( data.questions, function( index, value ){
+                    console.log(value._text);
+                    $('#insert_question_buttons').append('<label class="btn btn-outline-success check_button" id="'+value._id+
+                                    '"><input type="checkbox" class="checkbox_trello" autocomplete="off" data-checked=false id="'+value._text+'"> '+value._text+'</label>');
+                    });
+                }
+        });
+   }
+});
+
+$(function(){
+
+    $("#generate").click(function (){
+        var test_id = $("#generate").data("test-id");
+        $('#insert_message_buttons').empty()
+        $('#insert_topic_buttons').empty()
+        console.log(test_id);
+        $("#generate").attr('disabled', true);
+        $("#trelloexport").attr('disabled', true);
+        $("#body-tab-content").hide();
+        $("#loading").show();
+        $.ajax({
+          type: "POST",
+          url: "/generatedata",
+          data: {"data":test_id, "generate_data":true},
+          cache: false,
+          success: function(data){
+              $("#body-tab-content").show();
+              $("#loading").hide();
+              $("#generate").attr('disabled', false);
+              $("#trelloexport").attr('disabled', false);
+              $('#insert_message_buttons').show()
+              $('#insert_topic_buttons').show()
+              console.log(data.messages);
+              console.log(data.topics)
+              $.each( data.messages, function( index, value ){
+                    console.log(value._text);
+                    $('#insert_message_buttons').append('<label class="btn btn-outline-success check_button" id="'+value._id+
+                                    '"><input type="checkbox" class="checkbox_trello" autocomplete="off" data-checked=false id="'+value._text+'"> '+value._text+'</label>');
+              });
+              $.each( data.topics, function( index, value ){
+                    console.log(value._text);
+                    $('#insert_topic_buttons').append('<label class="btn btn-outline-success check_button" id="'+value._id+
+                                    '"><input type="checkbox" class="checkbox_trello" autocomplete="off" data-checked=false id="'+value._text+'"> '+value._text+'</label>');
+              });
+              $.each( data.actions, function( index, value ){
+                    console.log(value._text);
+                    $('#insert_action_buttons').append('<label class="btn btn-outline-success check_button" id="'+value._id+
+                                    '"><input type="checkbox" class="checkbox_trello" autocomplete="off" data-checked=false id="'+value._text+'"> '+value._text+'</label>');
+                    });
+              $.each( data.follow_ups, function( index, value ){
+                    console.log(value._text);
+                    $('#insert_followup_buttons').append('<label class="btn btn-outline-success check_button" id="'+value._id+
+                                    '"><input type="checkbox" class="checkbox_trello" autocomplete="off" data-checked=false id="'+value._text+'"> '+value._text+'</label>');
+              });
+              $.each( data.questions, function( index, value ){
+                    console.log(value._text);
+                    $('#insert_question_buttons').append('<label class="btn btn-outline-success check_button" id="'+value._id+
+                                    '"><input type="checkbox" class="checkbox_trello" autocomplete="off" data-checked=false id="'+value._text+'"> '+value._text+'</label>');
+              });
+          }
+        });
+  });
+});
+
+$(function(){
+
+    $("#trelloexport").click(function (){
+
+            var result = $('input[type="checkbox"]:checked');
+            console.log(result.length);
+            var selected = [];
+            $('input[type="checkbox"]:checked').each(function() {
+                selected.push($(this).attr('id'));
+            });
+            console.log(selected)
+            var data = JSON.stringify(selected);
+            $("#body-tab-content").hide();
+            $("#loading").show();
+            $.ajax({
+                    type: "POST",
+                    url: "/trelloexport",
+                    data: {"data":data},
+                    cache: false,
+                    success: function(data){
+                           $('input[type="checkbox"]:checked').each(function() {
+                                $(this).prop('checked', false);
+                             });
+                             $("#body-tab-content").show();
+                             $("#loading").hide();
+                             $(this).parent().attr('class','btn btn-outline-success check_button');
+                             alert(data.message);
+                    }
+        });
+            });
+});
+</script>
+
+{% endblock %}
+{% block content %}
+    <div></div>
+    <a href="{{ url_for('testcycle', testcycleid=row['testcycleid']) }}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Go Back</a>
+    {% if row['testvideourl'] %}
+    <div class="text-center">
+    <button type="button" class="btn btn-primary btn-lg" id="generate" data-test-id="{{ row['testid'] }}">Generate</button>
+    </div>
+    {% else %}
+    <div class="text-center">
+        <p> Upload a video to get started:
+            <a href="{{ url_for('edittestitem', testid=row['testid']) }}" class="btn btn-primary" role="button">Upload</a>
+        </p>
+    </div>
+    {% endif %}
+<hr>
+<div class="card-deck">
+    <div class="card mb-3" style="max-width: 500px;">
+    <video src="{{ url_for('static', filename='') }}{{ row['testvideourl'] }}" controls></video>
+  <div class="row gx-5">
+    <div class="col-md-12">
+      <div class="card-body">
+        <h5 class="card-title-test">{{ row["testname"] }}</h5>
+        <!--p class="card-text-desc" id="testid">{{ row["testid"] }}</p-->
+        <p class="card-text-desc">{{ row["testdescription"] }}</p>
+        <p class="card-text-desc">Last updated on: {{ convert_time(row["lastupdate"]) }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+    <div class="card">
+  <div class="card-header">
+    <ul class="nav nav-tabs card-header-tabs" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#messages">Message</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#topics">Topics</a>
+      </li>
+            <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#actions">Actions</a>
+      </li>
+            <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#questions">Questions</a>
+      </li>
+            <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#followups">Follow-Up</a>
+      </li>
+    </ul>
+  </div>
+  <div class="card-body">
+      <div id="loading"></div>
+      <div class="tab-content" id="body-tab-content">
+        <div id="messages" class="container tab-pane active"><br>
+        <div id="insert_messages" class="scrollable" style="max-height: 400px">
+            <div id="insert_message_buttons" class="btn-group-vertical" data-toggle="buttons">
+                <label class="btn btn-outline-success btn-block check_button" id="test_btn"><input type="checkbox" class="checkbox_trello" autocomplete="off" data-checked=false> Test Button</label>
+            </div>
+      </div>
+      </div>
+        <div id="topics" class="container tab-pane fade"><br>
+        <div id="insert_topics" class="scrollable" style="max-height: 400px">
+            <div id="insert_topic_buttons" class="btn-group-vertical" data-toggle="buttons">
+            </div>
+    </div>
+    </div>
+        <div id="actions" class="container tab-pane fade"><br>
+        <div id="insert_actions" class="scrollable" style="max-height: 400px">
+            <div id="insert_action_buttons" class="btn-group-vertical" data-toggle="buttons">
+            </div>
+        </div>
+    </div>
+        <div id="questions" class="container tab-pane fade"><br>
+        <div id="insert_questions" class="scrollable" style="max-height: 400px">
+            <div id="insert_question_buttons" class="btn-group-vertical" data-toggle="buttons">
+            </div>
+        </div>
+    </div>
+        <div id="followups" class="container tab-pane fade"><br>
+        <div id="insert_followups" class="scrollable" style="max-height: 400px">
+            <div id="insert_followup_buttons" class="btn-group-vertical" data-toggle="buttons">
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+  <div class="card-footer">
+      <button type="button" class="btn btn-primary btn-sm" id="trelloexport">Export to Trello</button>
+  </div>
+</div>
+</div>
+
+
+
+
+
+    <p>
+<div>
+<a href="{{ url_for('edittestitem', testid=row['testid']) }}" class="btn btn-primary" role="button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-wrench" viewBox="0 0 16 16">
+  <path d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004 3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364L.102 2.223zm13.37 9.019.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11l.471.242z"></path>
+</svg>
+                Edit
+</a>
+<button type="button" class="btn btn-outline-danger">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+  <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+  <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+</svg>
+                Delete
+</button>
+
+</div>
+</p>
+{% endblock %}
