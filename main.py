@@ -90,7 +90,7 @@ def to_json(data):
 
 
 def get_db_connection():
-    dbpath = app.root_path + '\\db\\' + app.config['DB_NAME']
+    dbpath = app.root_path + '/db/' + app.config['DB_NAME']
     # print(dbpath)
     conn = sqlite3.connect(dbpath)
     conn.row_factory = sqlite3.Row
@@ -185,7 +185,7 @@ def createtestcycle():
         # flash('Creating Folder for Test Cycle: {}'.format(last_id))
         target_directory = app.config['TESTCYCLE_PREFIX'] + str(last_id)
         print(target_directory)
-        parent_directory = app.static_folder + '\\uploads\\'
+        parent_directory = app.static_folder + '/uploads/'
         print(parent_directory)
         mode = 0o777
         path = os.path.join(parent_directory, target_directory)
@@ -194,7 +194,7 @@ def createtestcycle():
             os.mkdir(path, mode)
             # flash('Directory Created {}'.format(path))
             if filename:
-                form.testcycleimage.data.save(path + '\\' + filename)
+                form.testcycleimage.data.save(path + '/' + filename)
                 filepath = 'uploads/' + app.config['TESTCYCLE_PREFIX'] + str(last_id) + '/' + filename
                 cur.execute("update TestCycle set imageurl=?,lasupdate=? where testcycleid=?",
                             [filepath, int(t.time()), last_id])
@@ -243,7 +243,7 @@ def createtestitem(testcycleid):
         print(last_id)
         target_directory = app.config['TESTITEM_PREFIX'] + str(last_id)
         print(target_directory)
-        parent_directory = app.static_folder + '\\uploads\\'
+        parent_directory = app.static_folder + '/uploads/'
         print(parent_directory)
         mode = 0o777
         path = os.path.join(parent_directory, target_directory)
@@ -252,7 +252,7 @@ def createtestitem(testcycleid):
             os.mkdir(path, mode)
             # flash('Directory Created {}'.format(path))
             if filename:
-                form.testvideo.data.save(path + '\\' + filename)
+                form.testvideo.data.save(path + '/' + filename)
                 filepath = 'uploads/' + app.config['TESTITEM_PREFIX'] + str(last_id) + '/' + filename
                 cur.execute("update Test set testvideourl=?,lastupdate=? where testid=?",
                             [filepath, int(t.time()), last_id])
@@ -285,13 +285,13 @@ def edittestitem(testid):
         if filename:
             target_directory = app.config['TESTITEM_PREFIX'] + str(row['testid'])
             print(target_directory)
-            parent_directory = app.static_folder + '\\uploads\\'
+            parent_directory = app.static_folder + '/uploads/'
             print(parent_directory)
             path = os.path.join(parent_directory, target_directory)
             mode = 0o777
             if not os.path.isdir(path):
                 os.makedirs(path, mode, exist_ok=True)
-            form.testvideo.data.save(path + '\\' + filename)
+            form.testvideo.data.save(path + '/' + filename)
             filepath = 'uploads/' + app.config['TESTITEM_PREFIX'] + str(row['testid']) + '/' + filename
             conversationid = None
             cur.execute("update Test set testvideourl=?,lastupdate=?,conversationid=? where testid=?",
@@ -328,13 +328,13 @@ def edittestcycle(testcycleid):
         if filename:
             target_directory = app.config['TESTCYCLE_PREFIX'] + str(row['testcycleid'])
             print(target_directory)
-            parent_directory = app.static_folder + '\\uploads\\'
+            parent_directory = app.static_folder + '/uploads/'
             print(parent_directory)
             path = os.path.join(parent_directory, target_directory)
             mode = 0o777
             if not os.path.isdir(path):
                 os.makedirs(path, mode, exist_ok=True)
-            form.testcycleimage.data.save(path + '\\' + filename)
+            form.testcycleimage.data.save(path + '/' + filename)
             filepath = 'uploads/' + app.config['TESTCYCLE_PREFIX'] + str(row['testcycleid']) + '/' + filename
             cur.execute("update TestCycle set imageurl=?,lastupdate=? where testcycleid=?",
                         [filepath, int(t.time()), row['testcycleid']])
@@ -370,9 +370,9 @@ def generatedata():
     if request.method == 'POST':
         if row['conversationid'] is None or request.form['generate_data'] == 'true':
             # print()
-            target_directory = app.config['TESTITEM_PREFIX'] + str(row['testid']) + '\\'
+            target_directory = app.config['TESTITEM_PREFIX'] + str(row['testid']) + '/'
             # print(target_directory)
-            parent_directory = app.static_folder + '\\uploads\\'
+            parent_directory = app.static_folder + '/uploads/'
             # print(parent_directory)
             path = os.path.join(parent_directory, target_directory, row['testvideourl'].split('/')[-1])
             print(path)
@@ -440,3 +440,4 @@ def trelloexport():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
